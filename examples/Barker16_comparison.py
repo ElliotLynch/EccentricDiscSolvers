@@ -3,8 +3,6 @@ Barker16_comparison.py
 
 Compute the lowest order modes from Barker and Ogilvie 2016 and plot orbits, eccentricity and surface density
 
-Again using this for agile development
-
 TODO:
 
  - correct weird issue with axis ticks
@@ -26,7 +24,7 @@ def rigid_inner(self,a):
 def rigid_outer(self,a,y):
   return y[0]
 
-# put powerlaw into begin
+# put powerlaw in to begin
 def forcing_freq(a,e):
   return 0.0
 
@@ -36,6 +34,7 @@ def csound2(a):
 def dlnHcirc_dlna(a):
   return 1.0  #(-2.0*ab*((acav/a)**zeta)*l0*zeta + a*np.sqrt(ab/a)*(1.0 + 2.0*zeta*((acav/a)**zeta)))/(2.0*a*np.sqrt(ab/a) - 2.0*ab*l0)
 
+# setup solver
 solver=msolvers.EccentricDiscIso3DSolver()
 solver.forcing_frequency = forcing_freq
 solver.csound2 = csound2
@@ -78,16 +77,17 @@ plt.show()
 
 print('omega :', res)
 
+# this just allows use of custom plot 
 fig = plt.figure()
 
 ax = []
 
 ax += [fig.add_subplot(2,1,1)]
-
 ax += [fig.add_subplot(2,1,2)]
 ax[1] = eplt.ScalorDiscAxes(fig,ax[1].get_position())
 
-
+# set of inner boundary eccentricity gradients
+# and initial guesses for omega0 to compute for
 ea0s = [0.1,0.25,0.5,0.75,0.9,0.99755]
 omega0s = [-0.01,-0.01,-0.01,-0.01,-0.05,-0.2692]
 
@@ -112,6 +112,7 @@ solver.omega0=-0.2692
 
 res = solver.solve()
 
+# compute orbits of most nonlinear mode and show
 orbits = egeo.EccentricOrbits()
 orbits.solver = solver
 orbits.coord_system = "CART"
