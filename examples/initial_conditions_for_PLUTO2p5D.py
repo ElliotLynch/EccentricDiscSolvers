@@ -1,7 +1,7 @@
 """
 initial_conditions_for_PLUTO2p5D.py
 
-Computes initial conditions for a 3D unstratified PLUTO simulation
+Computes initial conditions for a hydro, 3D unstratified, PLUTO simulation
 
 Based on code provided by Loren E. Held
 
