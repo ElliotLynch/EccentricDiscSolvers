@@ -1,5 +1,10 @@
 """
+AdiabaticTests.py
+
 Compute the lowest order modes for adiabatic discs with gamma=5/3 and gamma=2. For the latter compare the two gamma=2 solvers.
+These differ in the evaluation of the geometric part of the Hamiltonian. EccentricDiscAdiabatic2DSolver impliments a series
+method (valid for real gamma), while EccentricDiscGamma2_2DSolver makes use of an exact evaluation of the orbit averages possible
+when gamma is an integer.
 
 """
 import numpy as np
@@ -27,6 +32,7 @@ def csound2(a):
 def dlnHcirc_dlna(a):
   return 1.0  #(-2.0*ab*((acav/a)**zeta)*l0*zeta + a*np.sqrt(ab/a)*(1.0 + 2.0*zeta*((acav/a)**zeta)))/(2.0*a*np.sqrt(ab/a) - 2.0*ab*l0)
 
+# setup general (2D) adiabatic solver
 solver=msolvers.EccentricDiscAdiabatic2DSolver()
 solver.forcing_frequency = forcing_freq
 solver.csound2 = csound2
@@ -47,7 +53,7 @@ solver.amax=amax
 
 a_s = 10.0**np.linspace(np.log10(amin),np.log10(amax),200000)
 
-
+# inner bounday eccentricity gradients and initial guesses to omega to compute
 ea0s=[0.1,0.2,0.5,0.7,0.8]
 omegas=[-0.01,-0.01,-0.01,-0.2141592274082687,-0.2141592274082687]
 
@@ -81,9 +87,12 @@ plt.xlabel('a')
 
 plt.show()
 
-
+# switch to gamma=2 as we can compare the implementation
+# of gamma=2 in EccentricDiscAdiabatic2DSolver and EccentricDiscGamma2_2DSolver
 solver.gamma=2.0
 
+# alternate implentation of (2D) gamma=2 adiabatic disc
+# based on exact evaluation of the orbit averages.
 solver_gamma2=msolvers.EccentricDiscGamma2_2DSolver()
 solver_gamma2.forcing_frequency = forcing_freq
 solver_gamma2.csound2 = csound2
@@ -92,6 +101,7 @@ solver_gamma2.dlnHcirc_dlna = dlnHcirc_dlna
 solver_gamma2.inner_bc = rigid_inner
 solver_gamma2.outer_bc = rigid_outer
 
+# inner bounday eccentricity gradients and initial guesses to omega to compute
 ea0s=[0.1,0.2,0.5,0.7,0.8]
 omegas=[-0.01,-0.01,-0.01,-0.2141592274082687,-0.2141592274082687]
 
@@ -123,7 +133,7 @@ plt.xlabel('a')
 
 plt.show()
 
-
+# show the computed precession frequencies are the same.
 plt.plot(omega_actual,omega_actual_gamma2,'k-')
 plt.xlabel('EccentricDiscAdiabatic2DSolver')
 plt.ylabel('EccentricDiscGamma2_2DSolver')
