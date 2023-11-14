@@ -1,7 +1,7 @@
 """
-initial_conditions_for_PLUTO2p5D.py
+initial_conditions_for_PLUTO2p5D_MHD.py
 
-Computes initial conditions for a 3D unstratified PLUTO simulation
+Computes initial conditions for ideal MHD, 3D unstratified, PLUTO simulation
 
 Based on code provided by Loren E. Held
 
