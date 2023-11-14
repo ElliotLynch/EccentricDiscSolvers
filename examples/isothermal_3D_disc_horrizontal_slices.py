@@ -1,10 +1,7 @@
 """
-isothermal_3D_disc_horrizontal_slices
+isothermal_3D_disc_horrizontal_slices.py
 
 plots horrizontal slice through fluid properties of a 3D isothermal disc
-
-Using this for agile development
-
 
 """
 import numpy as np
