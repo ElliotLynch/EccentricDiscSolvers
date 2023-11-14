@@ -29,6 +29,7 @@ N2=200
 
 NTOT = N1*N2
 
+#sets up domain extend and properties of the taper in the magnetic field
 amin=1.0
 amax=5.0
 wtransition=0.1
@@ -130,7 +131,7 @@ def limiting_slope(a):
 
   return np.where(a<abar,a-amin,-a+amax)/a
 
-
+# setup solver
 solver=msolvers.EccentricDiscIsoMHD_2DSolver()
 solver.forcing_frequency = forcing_freq
 solver.csound2 = csound2
