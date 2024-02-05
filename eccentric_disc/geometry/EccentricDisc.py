@@ -310,8 +310,9 @@ class EccentricDisc( EccentricOrbits ):
  
     sol = intg.solve_ivp(_magnetic_integrands,aspan,y0, t_eval=a[:,0])
 
-    eccentricity = self.e(a[:,0])
-    aea = self.ey(a[:,0])
+    #need to outer this?
+    eccentricity = np.outer(self.e(a[:,0]),np.ones_like(a[0]))
+    aea = np.outer(self.ey(a[:,0]),np.ones_like(a[0]))
 
     Az=np.outer(sol.y[0],np.ones_like(a[0]))
     Am=np.outer(sol.y[1],np.ones_like(a[0]))

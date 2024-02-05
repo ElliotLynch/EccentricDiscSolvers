@@ -24,7 +24,7 @@ bt_to_bz=0.0
 
 # grid size
 N1=128
-N2=128
+N2=256
 
 NTOT = N1*N2
 
