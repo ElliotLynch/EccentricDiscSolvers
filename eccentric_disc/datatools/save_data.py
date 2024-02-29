@@ -189,7 +189,7 @@ def savePLUTO(s,s_grid,save_grid,**kwargs):
     isMHD=kwargs['isMHD'] 
 
   vectorPotential=True
-  if vectorPotential in kwargs:
+  if 'vectorPotential' in kwargs:
     vectorPotential=kwargs['vectorPotential']
 
   agrid = s_grid[0]
