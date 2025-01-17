@@ -121,7 +121,8 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
       return self._fail
 
   # want to solve for given ea0 on inner bc?
-  def solve(self,setSol=True,emax=None,method='newton'):
+  #def solve(self,setSol=True,emax=None,method='newton'):
+  def solve(self,setSol=True,method='newton'):
 
     if self.cavity!=None:
       amin=self.cavity(self.Amplitude0)
@@ -131,37 +132,37 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
      # want to solve for the mode with a given emax
      # does this makes sense for this solution - I suspect not as there
      # can only be one
-    if emax!=None:
+    #if emax!=None:
 
-      a_s=np.exp(np.linspace(np.log(amin),np.log(self.amax),self._N_A_COLPOINTS))
+    #  a_s=np.exp(np.linspace(np.log(amin),np.log(self.amax),self._N_A_COLPOINTS))
 
-      Amplitude00=self.Amplitude0
+    #  Amplitude00=self.Amplitude0
 
-      def _maxe_objective(inner_bc_param):
+    #  def _maxe_objective(inner_bc_param):
 
-        self.params=inner_bc_param
-        _res = opt.newton(self.shoot_once,Amplitude00) # not clear which we want to do
+    #    self.params=inner_bc_param
+    #    _res = opt.newton(self.shoot_once,Amplitude00) # not clear which we want to do
 
-        self.Amplitude0=_res
+    #    self.Amplitude0=_res
 
          # does this assue set sol?
-        e, ey = self(a_s)
+    #    e, ey = self(a_s)
 
-        return np.max(e)-emax
+    #    return np.max(e)-emax
 
         # not clear how to generalise - also is 0 singular?
-      resEmax = opt.newton(_maxe_objective,0.0)
+    #  resEmax = opt.newton(_maxe_objective,0.0)
 
       # this doesn't make sense generally but trying to get this to work
       #resEmax = opt.bisect(_maxe_objective,0.0,1.0)
 
-      self.params=resEmax
+    #  self.params=resEmax
 
-      res = opt.newton(self.shoot_once,Amplitude00)  #,full_output=True)
+    #  res = opt.newton(self.shoot_once,Amplitude00)  #,full_output=True)
 
-      self.Amplitude0=Amplitude00 # then switch back if needed
+    #  self.Amplitude0=Amplitude00 # then switch back if needed
 
-    else:
+    #else:
 
       #need some form of switch
       
@@ -173,15 +174,15 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
       #  res=self.omega0
       #  self.valid_solution=False
 
-       #possibly check if scipy root (or similar) takes this as an argument 
-      if method=='newton':
-        res = opt.newton(self.shoot_once,self.Amplitude0)  #,full_output=True)
-      elif method=='bisect':
-        res = opt.bisect(self.shoot_once,self.Amplitude0*(1.0 - self.search_width),self.Amplitude0*(1.0 + self.search_width))
+     #possibly check if scipy root (or similar) takes this as an argument 
+    if method=='newton':
+      res = opt.newton(self.shoot_once,self.Amplitude0)  #,full_output=True)
+    elif method=='bisect':
+      res = opt.bisect(self.shoot_once,self.Amplitude0*(1.0 - self.search_width),self.Amplitude0*(1.0 + self.search_width))
 
-      # atempting with a different scheme
-      #res_result = opt.root_scalar(self.shoot_once,x0=self.Amplitude0,x1=0.0)
-      #res=res_result.root
+    # atempting with a different scheme
+    #res_result = opt.root_scalar(self.shoot_once,x0=self.Amplitude0,x1=0.0)
+    #res=res_result.root
 
     if setSol:
       self.Amplitude0=res
