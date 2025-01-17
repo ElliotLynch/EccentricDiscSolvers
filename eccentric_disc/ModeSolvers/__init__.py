@@ -7,4 +7,6 @@ from .EccentricDiscGamma2_2D import *
 from .EccentricDiscGamma2_2DSolver import *
 from .EccentricDiscIsoMHD_2D import *
 from .EccentricDiscIsoMHD_2DSolver import *
+from .EccentricDiscIso3D_AABinarySolver import *
+
 
