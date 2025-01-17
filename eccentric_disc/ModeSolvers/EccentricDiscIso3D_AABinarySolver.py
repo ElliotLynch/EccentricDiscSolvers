@@ -36,9 +36,53 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
 
    #for bisection type methods
    self.search_width = 0.1
+  
+   # stores for the amplitde dependant
+   # versions of these functions
+   #self._csound2 = None
+   #self._dlnHcirc_dlna = None
+   #self._Ma = None
+
+   self.acav=None
+
 
   # we must have to modify the inner boundary as that's where the mode amplitude is set
   # and we have replaced omega with the mode amplitude as a parameter
+
+  #@property
+  #def csound2(self,a):
+  #  if self.cavity == None:
+  #    return self._csound2(a)
+  #  else:
+  #    self.cavity = self._csound2(a,self.cavity(self.Amplitude0)) # will this give the correct behaviour?
+
+  #@csound2.setter
+  #def csound2(self, csound2):
+  #  self._csound2 = csound2
+  
+  #@property
+  #def dlnHcirc_dlna(self,a):
+  #  if self.cavity == None:
+  #    return self._dlnHcirc_dlna(a)
+  #  else:
+  #    self.dlnHcirc_dlna = self._dlnHcirc_dlna(a,self.cavity(self.Amplitude0)) # will this give the correct behaviour?
+
+  #@dlnHcirc_dlna.setter
+  #def dlnHcirc_dlna(self, dlnHcirc_dlna):
+  #  self._dlnHcirc_dlna = dlnHcirc_dlna
+
+  #@property
+  #def Ma(self,a):
+  #  if self.Ma == None:
+  #    return self._Ma(a)
+  #  else:
+  #    self.Ma = self._Ma(a,self.cavity(self.Amplitude0)) # will this give the correct behaviour?
+
+  #@Ma.setter
+  #def Ma(self, Ma):
+  #  self._Ma = Ma
+
+  #TODO: correct acav vs amin
 
 
   def __call__(self, a, Amplitude=None):
@@ -49,8 +93,10 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
 
     if self.cavity!=None:
       amin=self.cavity(Amplitude)
+      self.acav=amin #note amin!=acav -> need to deal with that conversion internal to the function
     else:
       amin=self.amin
+      self.acav=amin
 
     if self.params==None:
       yinit = self.inner_bc(self,amin,Amplitude) # need Amplitude as well
@@ -95,8 +141,10 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
 
     if self.cavity!=None:
       amin=self.cavity(Amplitude)
+      self.acav=amin
     else:
       amin=self.amin
+      self.acav=amin
 
     if self.params==None:
       y0 = self.inner_bc(self,amin,Amplitude)
@@ -126,8 +174,10 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
 
     if self.cavity!=None:
       amin=self.cavity(self.Amplitude0)
+      self.acav=amin
     else:
       amin=self.amin
+      self.acav=amin
 
      # want to solve for the mode with a given emax
      # does this makes sense for this solution - I suspect not as there
