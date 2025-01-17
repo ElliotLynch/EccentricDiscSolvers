@@ -22,6 +22,11 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
    self.inner_bc = None
    self.outer_bc = None
 
+   # function for setting an amplitude dependant cavity size
+   # resulting in a variable amin
+   self.cavity = None
+
+
    # something large to ensure it's rejected
    self._fail = 1.0e6
 
@@ -42,10 +47,15 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
       Amplitude=self.Amplitude0
  
 
-    if self.params==None:
-      yinit = self.inner_bc(self,self.amin,Amplitude) # need Amplitude as well
+    if self.cavity!=None:
+      amin=self.cavity(Amplitude)
     else:
-      yinit = self.inner_bc(self,self.amin,Amplitude,self.params)
+      amin=self.amin
+
+    if self.params==None:
+      yinit = self.inner_bc(self,amin,Amplitude) # need Amplitude as well
+    else:
+      yinit = self.inner_bc(self,amin,Amplitude,self.params)
  
     #aspan = [self.amin,self.amax]
 
@@ -53,7 +63,7 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
    
     if np.isscalar(a):
 
-      aspan = [self.amin,a]
+      aspan = [amin,a]
 
       # weird this is the way that suggested to implent this
       sol = solve_ivp(lambda ax, y: self.equation_of_motion(ax,y,0.0),aspan,yinit) 
@@ -62,9 +72,9 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
 
     else:
 
-      if self.amin!=a[0]:
+      if amin!=a[0]:
 
-        aspaninit = [self.amin,a[0]]
+        aspaninit = [amin,a[0]]
 
       # weird this is the way that suggested to implent this
         solinit = solve_ivp(lambda ax, y: self.equation_of_motion(ax,y,0.0),aspaninit,yinit) #,t_eval=a)
@@ -83,17 +93,22 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
 
   def shoot_once(self,Amplitude):
 
-    if self.params==None:
-      y0 = self.inner_bc(self,self.amin,Amplitude)
+    if self.cavity!=None:
+      amin=self.cavity(Amplitude)
     else:
-      y0 = self.inner_bc(self,self.amin,Amplitude,self.params)
+      amin=self.amin
+
+    if self.params==None:
+      y0 = self.inner_bc(self,amin,Amplitude)
+    else:
+      y0 = self.inner_bc(self,amin,Amplitude,self.params)
  
-    aspan = [self.amin,self.amax]
+    aspan = [amin,self.amax]
  
       # why isn't there tolerances set?
       # looking for stationary solutions
-    sol = solve_ivp(lambda a, y: self.equation_of_motion(a,y,0.0),aspan,y0)
-    #sol = solve_ivp(lambda a, y: self.equation_of_motion(a,y,0.0),aspan,y0,rtol=1.0e-10,atol=1.0e-10)
+    #sol = solve_ivp(lambda a, y: self.equation_of_motion(a,y,0.0),aspan,y0)
+    sol = solve_ivp(lambda a, y: self.equation_of_motion(a,y,0.0),aspan,y0,rtol=1.0e-10,atol=1.0e-10)
     #sol = solve_ivp(lambda a, y: self.equation_of_motion(a,y,0.0),aspan,y0,method='LSODA')
 
 
@@ -108,12 +123,17 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
   # want to solve for given ea0 on inner bc?
   def solve(self,setSol=True,emax=None,method='newton'):
 
+    if self.cavity!=None:
+      amin=self.cavity(Amplitude)
+    else:
+      amin=self.amin
+
      # want to solve for the mode with a given emax
      # does this makes sense for this solution - I suspect not as there
      # can only be one
     if emax!=None:
 
-      a_s=np.exp(np.linspace(np.log(self.amin),np.log(self.amax),self._N_A_COLPOINTS))
+      a_s=np.exp(np.linspace(np.log(amin),np.log(self.amax),self._N_A_COLPOINTS))
 
       Amplitude00=self.Amplitude0
 
@@ -155,7 +175,7 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
 
        #possibly check if scipy root (or similar) takes this as an argument 
       if method=='newton':
-        res = opt.newton(self.shoot_once,self.Amplitude0) #,full_output=True)
+        res = opt.newton(self.shoot_once,self.Amplitude0)  #,full_output=True)
       elif method=='bisect':
         res = opt.bisect(self.shoot_once,self.Amplitude0*(1.0 - self.search_width),self.Amplitude0*(1.0 + self.search_width))
 
