@@ -107,8 +107,8 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
  
       # why isn't there tolerances set?
       # looking for stationary solutions
-    #sol = solve_ivp(lambda a, y: self.equation_of_motion(a,y,0.0),aspan,y0)
-    sol = solve_ivp(lambda a, y: self.equation_of_motion(a,y,0.0),aspan,y0,rtol=1.0e-10,atol=1.0e-10)
+    sol = solve_ivp(lambda a, y: self.equation_of_motion(a,y,0.0),aspan,y0)
+    #sol = solve_ivp(lambda a, y: self.equation_of_motion(a,y,0.0),aspan,y0,rtol=1.0e-10,atol=1.0e-10)
     #sol = solve_ivp(lambda a, y: self.equation_of_motion(a,y,0.0),aspan,y0,method='LSODA')
 
 
@@ -124,7 +124,7 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
   def solve(self,setSol=True,emax=None,method='newton'):
 
     if self.cavity!=None:
-      amin=self.cavity(Amplitude)
+      amin=self.cavity(self.Amplitude0)
     else:
       amin=self.amin
 
