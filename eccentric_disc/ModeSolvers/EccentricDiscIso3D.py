@@ -93,6 +93,9 @@ class EccentricDiscIso3D( object ):
 
     self._valid_solution=True
 
+    #to avoid singularity at e=0 in octopole terms
+    self.e_forcing_frequency = None
+
   # equation of motion, accepts precession frequency as an
   # argument
   def equation_of_motion(self,a,X,omega):
@@ -123,10 +126,14 @@ class EccentricDiscIso3D( object ):
 
     n = np.sqrt(self.GM/(a**3))
     
-    omegaf = self.forcing_frequency(a,e)
+    if (self.e_forcing_frequency!=None): 
+      e_omegaf = self.e_forcing_frequency(a,e)
+    
+      eaa = -(2.0/a)*ea + ((omega*e - e_omegaf)*n*a*a/(self.csound2(a)*np.sqrt(1 - e*e)) + dFde - a*ea*ddFdfde  - self.dlnHcirc_dlna(a)*dFdf)/(a*a*ddFdf2)
+    else:
+      omegaf = self.forcing_frequency(a,e)
 
-
-    eaa = -(2.0/a)*ea + ((omega - omegaf)*n*a*a*e/(self.csound2(a)*np.sqrt(1 - e*e)) + dFde - a*ea*ddFdfde  - self.dlnHcirc_dlna(a)*dFdf)/(a*a*ddFdf2)
+      eaa = -(2.0/a)*ea + ((omega - omegaf)*n*a*a*e/(self.csound2(a)*np.sqrt(1 - e*e)) + dFde - a*ea*ddFdfde  - self.dlnHcirc_dlna(a)*dFdf)/(a*a*ddFdf2)
 
     #print [ea,eaa]
 
