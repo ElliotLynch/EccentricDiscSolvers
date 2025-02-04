@@ -45,43 +45,6 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
 
    self.acav=None
 
-
-  # we must have to modify the inner boundary as that's where the mode amplitude is set
-  # and we have replaced omega with the mode amplitude as a parameter
-
-  #@property
-  #def csound2(self,a):
-  #  if self.cavity == None:
-  #    return self._csound2(a)
-  #  else:
-  #    self.cavity = self._csound2(a,self.cavity(self.Amplitude0)) # will this give the correct behaviour?
-
-  #@csound2.setter
-  #def csound2(self, csound2):
-  #  self._csound2 = csound2
-  
-  #@property
-  #def dlnHcirc_dlna(self,a):
-  #  if self.cavity == None:
-  #    return self._dlnHcirc_dlna(a)
-  #  else:
-  #    self.dlnHcirc_dlna = self._dlnHcirc_dlna(a,self.cavity(self.Amplitude0)) # will this give the correct behaviour?
-
-  #@dlnHcirc_dlna.setter
-  #def dlnHcirc_dlna(self, dlnHcirc_dlna):
-  #  self._dlnHcirc_dlna = dlnHcirc_dlna
-
-  #@property
-  #def Ma(self,a):
-  #  if self.Ma == None:
-  #    return self._Ma(a)
-  #  else:
-  #    self.Ma = self._Ma(a,self.cavity(self.Amplitude0)) # will this give the correct behaviour?
-
-  #@Ma.setter
-  #def Ma(self, Ma):
-  #  self._Ma = Ma
-
   #TODO: correct acav vs amin
 
 
@@ -179,72 +142,21 @@ class EccentricDiscIso3D_AABinarySolver( EccentricDiscIso3D ):
       amin=self.amin
       self.acav=amin
 
-     # want to solve for the mode with a given emax
-     # does this makes sense for this solution - I suspect not as there
-     # can only be one
-    #if emax!=None:
-
-    #  a_s=np.exp(np.linspace(np.log(amin),np.log(self.amax),self._N_A_COLPOINTS))
-
-    #  Amplitude00=self.Amplitude0
-
-    #  def _maxe_objective(inner_bc_param):
-
-    #    self.params=inner_bc_param
-    #    _res = opt.newton(self.shoot_once,Amplitude00) # not clear which we want to do
-
-    #    self.Amplitude0=_res
-
-         # does this assue set sol?
-    #    e, ey = self(a_s)
-
-    #    return np.max(e)-emax
-
-        # not clear how to generalise - also is 0 singular?
-    #  resEmax = opt.newton(_maxe_objective,0.0)
-
-      # this doesn't make sense generally but trying to get this to work
-      #resEmax = opt.bisect(_maxe_objective,0.0,1.0)
-
-    #  self.params=resEmax
-
-    #  res = opt.newton(self.shoot_once,Amplitude00)  #,full_output=True)
-
-    #  self.Amplitude0=Amplitude00 # then switch back if needed
-
-    #else:
-
-      #need some form of switch
-      
-      #try: # bad practice need to do proper error catch
-        #could try widening the search width until it crosses the root?    
-
-      #res = opt.bisect(self.shoot_once,self.omega0*(1.0 - self.search_width),self.omega0*(1.0 + self.search_width))
-      #except:
-      #  res=self.omega0
-      #  self.valid_solution=False
 
      #possibly check if scipy root (or similar) takes this as an argument 
     if method=='newton':
-      res = opt.newton(self.shoot_once,self.Amplitude0)  #,full_output=True)
+      #res = opt.newton(self.shoot_once,self.Amplitude0)  #,full_output=True)
+      res = opt.newton(self.shoot_once,self.Amplitude0)
     elif method=='bisect':
       res = opt.bisect(self.shoot_once,self.Amplitude0*(1.0 - self.search_width),self.Amplitude0*(1.0 + self.search_width))
 
-    # atempting with a different scheme
-    #res_result = opt.root_scalar(self.shoot_once,x0=self.Amplitude0,x1=0.0)
-    #res=res_result.root
 
     if setSol:
       self.Amplitude0=res
         #self.ea0=ea0   
 
-    #print res
-
     return res
 
-
-
-#if __name__ == '__main__':
 
 
 
